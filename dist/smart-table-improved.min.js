@@ -1,5 +1,5 @@
 /*
- * angular-smart-table-improved v0.0.1
+ * angular-smart-table-improved v0.1.0
  * https://github.com/timonwong/smart-table-improved
  *
  * (c) 2015 Timon Wong
