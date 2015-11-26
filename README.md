@@ -1,27 +1,39 @@
 # Smart-Table-Improved
 
-## Install
+Smart-Table-Improved is a collection of useful widgets for the great [Smart-Table] component.
 
-Use npm:
+## Requirements
+
+- AngularJs
+- [Smart-Table]
+
+## Installation
+
+
+### Install with NPM
 
 ```
-npm install angular-smart-table-improved
+$ npm install angular-smart-table-improved
 ```
+
+### Manual download
+
 
 ## Usage
 
 First you need to include the module in your project:
 
 ```javascript
-angular.module('youApp', ['smart-table-improved']);
+angular.module('yourApp', ['smart-table-improved']);
 ```
 
 
 ## Credits
 
 - [dirPagination] from [angularUtils];
-- build and relase script from [Vye.js];
+- build and relase script from [Vue.js];
 
+[Smart-Table]: http://lorenzofox3.github.io/smart-table-website
 [angularUtils]: https://github.com/michaelbromley/angularUtils
 [dirPagination]: https://github.com/michaelbromley/angularUtils/tree/master/src/directives/pagination
 [Vue.js]: https://github.com/vuejs/vue
