@@ -1,0 +1,17 @@
+<ul class="pagination {{ paginationClass }}" ng-if="pages.length > 1 || !autoHide">
+  <li ng-if="::boundaryLinks" ng-class="{disabled: currentPage === 1}">
+    <a href="" ng-click="selectPage(1)">&laquo;</a>
+  </li>
+  <li ng-if="::directionLinks" ng-class="{disabled: currentPage === 1}">
+    <a href="" ng-click="selectPage(currentPage - 1)">&lsaquo;</a>
+  </li>
+  <li ng-repeat="pageNumber in pages track by tracker(pageNumber, $index)" ng-class="{active: currentPage === pageNumber, disabled: pageNumber === '...'}" class="pagenumbers">
+    <a href="" ng-click="selectPage(pageNumber)">{{ pageNumber }}</a>
+  </li>
+  <li ng-if="::directionLinks" ng-class="{disabled: currentPage === numPages}">
+    <a href="" ng-click="selectPage(currentPage + 1)">&rsaquo;</a>
+  </li>
+  <li ng-if="::boundaryLinks" ng-class="{disabled: currentPage === numPages}">
+    <a href="" ng-click="selectPage(numPages)">&raquo;</a>
+  </li>
+</ul>

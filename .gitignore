@@ -1,0 +1,7 @@
+node_modules
+.DS_Store
+.idea
+npm-debug.log
+*.tgz
+src/sti-inlined-tpls.js
+dist/smart-table-improved.cjs.js
