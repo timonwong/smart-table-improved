@@ -1,9 +1,13 @@
-sudo: false
 language: node_js
+sudo: false
 node_js:
   - "0.12"
   - "4"
   - "5"
+
+cache:
+  directories:
+    - node_modules
 
 before_install:
   - export CHROME_BIN=chromium-browser
@@ -12,7 +16,7 @@ before_install:
 
 install:
   # Check the size of caches
-  - du -sh ./node_modules
+  - du -sh ./node_modules || true
   # Disable the spinner, it looks bad on Travis
   - npm config set spin false
   # Log HTTP requests
