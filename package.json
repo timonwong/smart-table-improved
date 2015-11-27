@@ -16,11 +16,10 @@
     "smart-table"
   ],
   "scripts": {
-    "test": "npm run lint && npm run cover && npm run build",
+    "test": "npm run lint && npm run specs && npm run build",
     "build": "node build/build.js",
-    "lint": "eslint src/** test/unit/specs/** build/**.js",
-    "unit": "karma start build/karma.unit.config.js",
-    "cover": "karma start build/karma.cover.config.js",
+    "lint": "eslint src/** test/specs/** build/**.js",
+    "specs": "karma start build/karma.specs.config.js",
     "release": "bash build/release.sh"
   },
   "repository": {
@@ -32,19 +31,32 @@
   },
   "homepage": "https://github.com/timonwong/smart-table-improved#readme",
   "devDependencies": {
+    "angular-mocks": "^1.4.8",
     "babel-core": "^6.2.1",
     "babel-loader": "^6.2.0",
+    "babel-plugin-external-helpers-2": "^6.1.18",
+    "babel-plugin-transform-runtime": "^6.1.18",
+    "babel-polyfill": "^6.2.0",
+    "babel-preset-es2015": "^6.1.18",
     "babel-preset-es2015-rollup": "^1.0.0",
     "babel-runtime": "^6.2.0",
     "eslint": "^1.10.1",
     "glob": "^6.0.1",
     "jasmine-core": "^2.3.4",
     "karma": "^0.13.15",
+    "karma-chrome-launcher": "^0.2.1",
+    "karma-firefox-launcher": "^0.1.7",
+    "karma-jasmine": "^0.3.6",
+    "karma-webpack": "^1.7.0",
     "ng-templatecache": "^0.1.4",
+    "object-assign": "^4.0.1",
     "rollup": "^0.21.0",
     "rollup-plugin-babel": "^2.1.0",
     "rollup-plugin-replace": "^1.1.0",
     "uglify-js": "^2.6.1",
     "webpack": "^1.12.9"
+  },
+  "dependencies": {
+    "angular": "^1.4.8"
   }
 }

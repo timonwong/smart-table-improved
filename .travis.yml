@@ -1,0 +1,24 @@
+sudo: false
+language: node_js
+node_js:
+  - "0.12"
+  - "4"
+  - "5"
+
+before_install:
+  - export DISPLAY=:99.0
+  - bash -e /etc/init.d/xvfb start
+
+install:
+  # Check the size of caches
+  - du -sh ./node_modules
+  # Disable the spinner, it looks bad on Travis
+  - npm config set spin false
+  # Log HTTP requests
+  - npm config set loglevel http
+  - npm install -g npm@2.5
+  # Instal npm dependecies and ensure that npm cache is not stale
+  - npm install
+
+script:
+  - npm test
