@@ -2,6 +2,13 @@ var assign = require('object-assign');
 var base = require('./karma.base.config.js');
 
 module.exports = function (config) {
+  var browsers = ['Firefox'];
+  if (process.env.TRAVIS) {
+    browsers.push('Chrome_Travis_CI');
+  } else {
+    browsers.push('Chrome');
+  }
+
   config.set(assign(base, {
     files: [
       '../test/specs/index.js'
@@ -9,19 +16,13 @@ module.exports = function (config) {
     preprocessors: {
       '../test/specs/index.js': ['webpack']
     },
-
-    // Start these browsers, currently available:
-    // - Chrome
-    // - ChromeCanary
-    // - Firefox
-    // - Opera (has to be installed with `npm install karma-opera-launcher`)
-    // - Safari (only Mac; has to be installed with `npm install karma-safari-launcher`)
-    // - PhantomJS
-    // - IE (only Windows; has to be installed with `npm install karma-ie-launcher`)
-    browsers: ['Chrome', 'Firefox'],
-
-    // test results reporter to use
-    // possible values: 'dots', 'progress', 'junit', 'growl', 'coverage'
-    reporters: ['progress']
+    browsers: browsers,
+    reporters: ['progress'],
+    customLaunchers: {
+      'Chrome_Travis_CI': {
+        base: 'Chrome',
+        flags: ['--no-sandbox']
+      }
+    }
   }));
 };
