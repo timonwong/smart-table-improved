@@ -18,7 +18,7 @@
   "scripts": {
     "test": "npm run build && npm run lint && npm run specs",
     "build": "node build/build.js",
-    "lint": "eslint src/** test/specs/** build/**.js",
+    "lint": "eslint 'src/**' 'test/specs/**' 'build/**.js'",
     "specs": "karma start build/karma.specs.config.js",
     "release": "bash build/release.sh"
   },

@@ -15,8 +15,12 @@ module.exports = {
       }]
     }
   },
-  webpackMiddleware: {
-    noInfo: true
-  },
-  singleRun: true
+  singleRun: true,
+  autoWatch: false,
+  plugins: [
+    'karma-chrome-launcher',
+    'karma-firefox-launcher',
+    'karma-jasmine',
+    'karma-webpack'
+  ]
 };
