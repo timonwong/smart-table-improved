@@ -3,5 +3,5 @@ node_modules
 .idea
 npm-debug.log
 *.tgz
-src/sti-inlined-tpls.js
+src/sti-templates.js
 dist/smart-table-improved.cjs.js

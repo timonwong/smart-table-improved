@@ -44,14 +44,14 @@ function writeTemplates() {
         });
         var code = templatecache({
           entries: cacheEntries,
-          module: ['smart-table-improved']
+          module: ['smart-table-improved.templates']
         });
       } catch (error) {
         reject(error);
         return;
       }
 
-      write('src/sti-inlined-tpls.js', code)
+      write('src/sti-templates.js', code)
         .then(resolve)
         .catch(reject);
     });
