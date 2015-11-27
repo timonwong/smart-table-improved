@@ -6,7 +6,7 @@ module.exports = {
     module: {
       loaders: [{
         test: /\.js$/,
-        exclude: /(test|node_modules)/,
+        exclude: /node_modules/,
         loader: 'babel',
         query: {
           presets: ['es2015'],
@@ -15,12 +15,14 @@ module.exports = {
       }]
     }
   },
-  singleRun: true,
-  autoWatch: false,
-  plugins: [
-    'karma-chrome-launcher',
-    'karma-firefox-launcher',
-    'karma-jasmine',
-    'karma-webpack'
-  ]
+  webpackServer: {
+    stats: {
+      colors: true
+    }
+  },
+  webpackMiddleware: {
+    noInfo: true
+  },
+  colors: true,
+  singleRun: true
 };
