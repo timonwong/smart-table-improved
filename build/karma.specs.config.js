@@ -10,12 +10,6 @@ module.exports = function (config) {
   }
 
   config.set(assign(base, {
-    files: [
-      '../test/specs/index.js'
-    ],
-    preprocessors: {
-      '../test/specs/index.js': ['webpack']
-    },
     browsers: browsers,
     reporters: ['progress'],
     customLaunchers: {

@@ -1,8 +1,14 @@
 // Shared config for all unit tests
 module.exports = {
   frameworks: ['jasmine'],
-  files: [],
+  files: [
+    '../test/specs/index.js'
+  ],
+  preprocessors: {
+    '../test/specs/index.js': ['webpack', 'sourcemap']
+  },
   webpack: {
+    devtool: 'inline-source-map',
     module: {
       loaders: [{
         test: /\.js$/,

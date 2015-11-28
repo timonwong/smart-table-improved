@@ -12,6 +12,7 @@
         "afterEach": true,
         "spyOn": true,
         "casper": true,
-        "angular": true
+        "angular": true,
+        "$": true
     }
 }
