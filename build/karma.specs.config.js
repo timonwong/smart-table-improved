@@ -1,5 +1,5 @@
 var assign = require('object-assign');
-var base = require('./karma.base.config.js');
+var base = require('./karma.base.config');
 
 module.exports = function (config) {
   var browsers = ['Firefox'];

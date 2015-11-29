@@ -17,6 +17,11 @@ var banner =
   ' * License: MIT\n' +
   ' */';
 
+var babelOptions = {
+  presets: [ 'es2015-rollup' ],
+  plugins: [ 'transform-runtime' ]
+};
+
 function main() {
   writeTemplates()
     .then(buildCJS())
@@ -63,7 +68,7 @@ function buildCJS() {
   return rollup.rollup({
     entry: 'src/index.js',
     plugins: [
-      babel()
+      babel(babelOptions)
     ]
   }).then(function (bundle) {
     return write('dist/smart-table-improved.cjs.js', bundle.generate({
@@ -81,7 +86,7 @@ function buildUmdDev() {
       replace({
         'process.env.NODE_ENV': "'development'"
       }),
-      babel()
+      babel(babelOptions)
     ]
   }).then(function (bundle) {
     return write('dist/smart-table-improved.js', bundle.generate({
@@ -99,7 +104,7 @@ function buildUmdProd() {
       replace({
         'process.env.NODE_ENV': "'production'"
       }),
-      babel()
+      babel(babelOptions)
     ]
   }).then(function (bundle) {
     var code = bundle.generate({

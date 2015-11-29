@@ -1,6 +1,7 @@
-node_modules
+node_modules/
+.idea/
+coverage/
 .DS_Store
-.idea
 npm-debug.log
 *.tgz
 src/sti-templates.js
