@@ -1,4 +1,6 @@
 // Shared config for all unit tests
+var path = require('path');
+
 module.exports = {
   frameworks: ['jasmine'],
   files: [
@@ -12,13 +14,13 @@ module.exports = {
     module: {
       loaders: [{
         test: /\.js$/,
-        exclude: /node_modules\//,
-        loader: 'babel',
-        query: {
-          presets: ['es2015'],
-          plugins: ['transform-runtime']
-        }
+        exclude: path.resolve(__dirname, '../node_modules/'),
+        loader: 'babel'
       }]
+    },
+    babel: {
+      presets: ['es2015'],
+      plugins: ['transform-runtime']
     }
   },
   webpackMiddleware: {

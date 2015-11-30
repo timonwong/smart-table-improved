@@ -1,5 +1,6 @@
 var assign = require('object-assign');
 var base = require('./karma.base.config');
+var path = require('path');
 
 module.exports = function (config) {
   var options = assign(base, {
@@ -13,11 +14,15 @@ module.exports = function (config) {
     }
   });
 
-  options.webpack.module.postLoaders = [
+  options.webpack.module.preLoaders = [
     {
       test: /\.js$/,
-      exclude: /(test|node_modules)\//,
-      loader: 'istanbul-instrumenter'
+      exclude: [
+        path.resolve(__dirname, '../test/'),
+        path.resolve(__dirname, '../node_modules/'),
+        /[\/\\]sti-templates.js$/
+      ],
+      loader: 'isparta'
     }
   ];
 
