@@ -1,0 +1,13 @@
+machine:
+  node:
+    version: 4
+
+dependencies:
+  cache_directories:
+    - node_modules
+  override:
+    - bash ./build/ci/install.sh
+
+test:
+  override:
+    - bash ./build/ci/test.sh
