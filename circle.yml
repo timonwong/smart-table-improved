@@ -1,6 +1,8 @@
 machine:
   node:
     version: 4
+  environment:
+    CODECOV_UPLOAD: 'true'
 
 dependencies:
   cache_directories:
