@@ -19,7 +19,9 @@ function stiPagination(stiPaginationConfig) {
       itemsPerPage: '=?',
       maxSize: '=?',
       onPageChange: '&',
-      autoHide: '=?'
+      autoHide: '=?',
+      currentPage: '=?',
+      totalItemCount: '=?'
     },
     templateUrl: function (element, attrs) {
       return attrs.templateUrl || stiPaginationConfig.templateUrl;
