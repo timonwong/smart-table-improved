@@ -22,5 +22,5 @@ if [[ "${REPLY}" =~ ^[Yy]$ ]]; then
     # publish
     git push origin "v${VERSION}"
     git push
-    npm publish
+    npm publish --registry=https://registry.npmjs.org
 fi
