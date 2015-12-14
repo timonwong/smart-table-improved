@@ -1,5 +1,5 @@
 /*
- * angular-smart-table-improved v0.1.0
+ * angular-smart-table-improved v0.2.0
  * https://github.com/timonwong/smart-table-improved
  *
  * (c) 2015 Timon Wong
@@ -13,7 +13,9 @@
 
   angular$1 = 'default' in angular$1 ? angular$1['default'] : angular$1;
 
-  angular$1.module('smart-table-improved', ['smart-table']);
+  angular$1.module('smart-table-improved.templates', []);
+
+  angular$1.module('smart-table-improved', ['smart-table', 'smart-table-improved.templates']);
 
   angular$1.module('smart-table-improved').constant('stiPaginationConfig', {
     itemsPerPage: 10,
@@ -30,7 +32,9 @@
         itemsPerPage: '=?',
         maxSize: '=?',
         onPageChange: '&',
-        autoHide: '=?'
+        autoHide: '=?',
+        currentPage: '=?',
+        totalItemCount: '=?'
       },
       templateUrl: function templateUrl(element, attrs) {
         return attrs.templateUrl || stiPaginationConfig.templateUrl;
@@ -181,7 +185,7 @@
     }
   }
 
-  angular.module("smart-table-improved").run(["$templateCache", function ($templateCache) {
+  angular.module("smart-table-improved.templates").run(["$templateCache", function ($templateCache) {
     $templateCache.put("sti/template/sti-pagination.html", "<ul class=\"pagination {{ paginationClass }}\" ng-if=\"pages.length > 1 || !autoHide\">\n  <li ng-if=\"::boundaryLinks\" ng-class=\"{disabled: currentPage === 1}\">\n    <a href=\"\" ng-click=\"selectPage(1)\">&laquo;</a>\n  </li>\n  <li ng-if=\"::directionLinks\" ng-class=\"{disabled: currentPage === 1}\">\n    <a href=\"\" ng-click=\"selectPage(currentPage - 1)\">&lsaquo;</a>\n  </li>\n  <li ng-repeat=\"pageNumber in pages track by tracker(pageNumber, $index)\" ng-class=\"{active: currentPage === pageNumber, disabled: pageNumber === \'...\'}\" class=\"pagenumbers\">\n    <a href=\"\" ng-click=\"selectPage(pageNumber)\">{{ pageNumber }}</a>\n  </li>\n  <li ng-if=\"::directionLinks\" ng-class=\"{disabled: currentPage === numPages}\">\n    <a href=\"\" ng-click=\"selectPage(currentPage + 1)\">&rsaquo;</a>\n  </li>\n  <li ng-if=\"::boundaryLinks\" ng-class=\"{disabled: currentPage === numPages}\">\n    <a href=\"\" ng-click=\"selectPage(numPages)\">&raquo;</a>\n  </li>\n</ul>\n");
   }]);
 
