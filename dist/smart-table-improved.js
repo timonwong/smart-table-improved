@@ -1,5 +1,5 @@
 /*
- * angular-smart-table-improved v0.2.0
+ * angular-smart-table-improved v0.3.0
  * https://github.com/timonwong/smart-table-improved
  *
  * (c) 2015 Timon Wong
@@ -16,6 +16,27 @@
   angular$1.module('smart-table-improved.templates', []);
 
   angular$1.module('smart-table-improved', ['smart-table', 'smart-table-improved.templates']);
+
+  angular$1.module('smart-table-improved').directive('stiTable', stiTable);
+
+  stiTable.$inject = ['$parse'];
+  function stiTable($parse) {
+    return {
+      restrict: 'A',
+      require: 'stTable',
+      scope: true,
+      link: link
+    };
+
+    function link(scope, element, attrs, ctrl) {
+      var stTableCtrl = ctrl;
+
+      if (attrs.defaultSort) {
+        var reverse = !!$parse(attrs.defaultSortReverse)(scope);
+        stTableCtrl.sortBy(attrs.defaultSort, reverse);
+      }
+    }
+  }
 
   angular$1.module('smart-table-improved').constant('stiPaginationConfig', {
     itemsPerPage: 10,
