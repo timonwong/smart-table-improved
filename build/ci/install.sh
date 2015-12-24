@@ -10,3 +10,11 @@ npm config set loglevel http
 npm install -g npm@2.5
 # Instal npm dependecies and ensure that npm cache is not stale
 npm install
+
+# Install online reporter tools for code coverage on demand
+if [[ -n "${CODECLIMATE_REPO_TOKEN}" ]]; then
+    npm install -g 'codeclimate-test-reporter'
+fi
+if [[ "${CODECOV_UPLOAD}" == "true" ]]; then
+    npm install -g 'codecov.io'
+fi
