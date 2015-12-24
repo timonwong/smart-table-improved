@@ -34,10 +34,12 @@ angular.module('yourApp', ['smart-table-improved']);
 
 ## Credits
 
-- build and release script from [Vue.js];
+- Build and release script from [Vue.js];
 - [dirPagination] from [angularUtils];
+- Table directives from [horizon];
 
 [Smart-Table]: http://lorenzofox3.github.io/smart-table-website
 [angularUtils]: https://github.com/michaelbromley/angularUtils
 [dirPagination]: https://github.com/michaelbromley/angularUtils/tree/master/src/directives/pagination
 [Vue.js]: https://github.com/vuejs/vue
+[horizon]: https://github.com/openstack/horizon

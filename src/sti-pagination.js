@@ -50,16 +50,18 @@ function stiPagination(stiPaginationConfig) {
     };
 
     // table state --> view
-    scope.$watch(function () {
+    scope.$watch(() => {
       return ctrl.tableState().pagination;
     }, redraw, true);
 
     // scope --> table state  (--> view)
-    scope.$watch('itemsPerPage', function (newValue, oldValue) {
+    scope.$watch('itemsPerPage', (newValue, oldValue) => {
       if (newValue !== oldValue) {
         scope.selectPage(1);
       }
     });
+
+    scope.$watch('maxSize', redraw);
 
     // view -> table state
     scope.selectPage = function (page) {
@@ -67,6 +69,10 @@ function stiPagination(stiPaginationConfig) {
         ctrl.slice((page - 1) * scope.itemsPerPage, scope.itemsPerPage);
       }
     };
+
+    if (!ctrl.tableState().pagination.number) {
+      ctrl.slice(0, scope.itemsPerPage);
+    }
 
     /**
      * Custom "track by" function which allows for duplicate "..." entries on long lists,
@@ -79,10 +85,6 @@ function stiPagination(stiPaginationConfig) {
     scope.tracker = function (id, index) {
       return `${id}_${index}`;
     };
-
-    if (!ctrl.tableState().pagination.number) {
-      ctrl.slice(0, scope.itemsPerPage);
-    }
 
     function redraw() {
       let paginationState = ctrl.tableState().pagination;
