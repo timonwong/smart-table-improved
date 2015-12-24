@@ -2,6 +2,7 @@
 
 [![Build Status](https://travis-ci.org/timonwong/smart-table-improved.svg?branch=development)](https://travis-ci.org/timonwong/smart-table-improved)
 [![Build Status](https://circleci.com/gh/timonwong/smart-table-improved/tree/development.svg?style=shield)](https://circleci.com/gh/timonwong/smart-table-improved/tree/development)
+[![Code Climate](https://codeclimate.com/github/timonwong/smart-table-improved/badges/gpa.svg)](https://codeclimate.com/github/timonwong/smart-table-improved)
 [![codecov.io](https://codecov.io/github/timonwong/smart-table-improved/coverage.svg?branch=development)](https://codecov.io/github/timonwong/smart-table-improved?branch=development)
 [![bitHound Overall Score](https://www.bithound.io/github/timonwong/smart-table-improved/badges/score.svg)](https://www.bithound.io/github/timonwong/smart-table-improved)
 [![devDependency Status](https://david-dm.org/timonwong/smart-table-improved/dev-status.svg?branch=development)](https://david-dm.org/timonwong/smart-table-improved#info=devDependencies)
