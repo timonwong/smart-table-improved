@@ -1,0 +1,21 @@
+engines:
+  eslint:
+    enabled: true
+  fixme:
+    enabled: true
+  nodesecurity:
+    enabled: true
+  duplication:
+    enabled: true
+    config:
+      languages:
+        - javascript
+
+ratings:
+  paths:
+    - "**.js"
+
+exclude_paths:
+  - test/**/*
+  - dist/**/*
+  - src/sti-templates.js
