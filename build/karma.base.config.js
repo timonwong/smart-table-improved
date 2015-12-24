@@ -4,6 +4,8 @@ var path = require('path');
 module.exports = {
   frameworks: ['jasmine'],
   files: [
+    // jQuery should load foremost
+    '../node_modules/jquery/dist/jquery.js',
     '../test/specs/index.js'
   ],
   preprocessors: {

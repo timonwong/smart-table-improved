@@ -42,8 +42,8 @@ describe('sti-table directive', () => {
     </tr>
   </tbody>`;
 
-  describe('Sort should work on init', () => {
-    it('should sort by default-sort attribute', () => {
+  describe('default-sort on init', () => {
+    it('should sort', () => {
       let template = `
       <table sti-table st-table="rowCollection" default-sort="age">
       ${commonTemplatePart}
@@ -52,7 +52,7 @@ describe('sti-table directive', () => {
       element = $compile(template)(scope);
       scope.$apply();
 
-      let actual = trToModel($(element).find('tr.test-row'));
+      let actual = trToModel(element.find('tr.test-row'));
       expect(actual).toEqual([
         {name: 'Leponge', firstname: 'Bob', age: 22},
         {name: 'Renard', firstname: 'Olivier', age: 33},
@@ -62,7 +62,7 @@ describe('sti-table directive', () => {
       ]);
     });
 
-    it('shoud sort reversely by default-sort and default-sort-reverse', () => {
+    it('should sort reversely by default-sort-reverse', () => {
       let template = `
       <table sti-table st-table="rowCollection" default-sort="age" default-sort-reverse="true">
       ${commonTemplatePart}
@@ -71,7 +71,7 @@ describe('sti-table directive', () => {
       element = $compile(template)(scope);
       scope.$apply();
 
-      let actual = trToModel($(element).find('tr.test-row'));
+      let actual = trToModel(element.find('tr.test-row'));
       expect(actual).toEqual([
         {name: 'Francoise', firstname: 'Frere', age: 99},
         {name: 'Renard', firstname: 'Laurent', age: 66},

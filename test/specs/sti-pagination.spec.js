@@ -87,7 +87,7 @@ describe('sti-pagination directive', () => {
       let template = `<div st-table="rowCollection"><table></table><sti-pagination></sti-pagination></div>`;
       let element = $compile(template)($rootScope);
       $rootScope.$apply();
-      expect($(element).find('#custom_stiPaginationConfig_templateUrl').length).toBe(1);
+      expect(element.find('#custom_stiPaginationConfig_templateUrl').length).toBe(1);
       stiPaginationConfig.templateUrl = defaultTemplate;
     });
 
@@ -97,7 +97,7 @@ describe('sti-pagination directive', () => {
       let template = `<div st-table="rowCollection"><table></table><sti-pagination template-url="custom_templateUrl.html"></sti-pagination></div>`;
       let element = $compile(template)($rootScope);
       $rootScope.$apply();
-      expect($(element).find('#custom_templateUrl').length).toBe(1);
+      expect(element.find('#custom_templateUrl').length).toBe(1);
     });
   });
 });

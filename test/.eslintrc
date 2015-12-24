@@ -11,8 +11,8 @@
         "beforeEach": true,
         "afterEach": true,
         "spyOn": true,
-        "casper": true,
         "angular": true,
-        "$": true
+        "$": true,
+        "jQuery": true
     }
 }
