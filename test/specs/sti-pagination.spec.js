@@ -67,7 +67,7 @@ describe('sti-pagination directive', () => {
     tableState = {
       sort: {},
       search: {},
-      pagination: {start: 0, totalItemCount: rowCollection.length}
+      pagination: {start: 0, totalItemCount: 0}
     };
   }));
 
@@ -126,6 +126,7 @@ describe('sti-pagination directive', () => {
     it('should show the correct pagination links at start of sequence', () => {
       compileElement({
         start: 0,
+        totalItemCount: rowCollection.length,
         numberOfPages: Math.ceil(rowCollection.length / 10),
         number: 10
       });
@@ -139,6 +140,7 @@ describe('sti-pagination directive', () => {
     it('should show the correct pagination links in middle sequence', () => {
       compileElement({
         start: 90,
+        totalItemCount: rowCollection.length,
         numberOfPages: Math.ceil(rowCollection.length / 10),
         number: 10
       });
@@ -152,6 +154,7 @@ describe('sti-pagination directive', () => {
     it('should show the correct pagination links at end of sequence', () => {
       compileElement({
         start: 150,
+        totalItemCount: rowCollection.length,
         numberOfPages: Math.ceil(rowCollection.length / 10),
         number: 10
       });
@@ -168,12 +171,13 @@ describe('sti-pagination directive', () => {
       $scope.onPageChange = jasmine.createSpy('onPageChange');
     });
 
-    it('should call the callback once when page link clicked', function() {
+    it('should call the callback once when page link clicked', () => {
       compileElement({
         number: 10,
+        totalItemCount: rowCollection.length,
         numberOfPages: Math.ceil(rowCollection.length / 10)
       }, {
-        itemsPerPage: 13, onPageChange: 'onPageChange(newPage)'
+        onPageChange: 'onPageChange(newPage)'
       });
 
       let pagination = element.find('ul.pagination');
@@ -191,9 +195,10 @@ describe('sti-pagination directive', () => {
     it('should not call when current page is not changed', () => {
       compileElement({
         number: 10,
+        totalItemCount: rowCollection.length,
         numberOfPages: Math.ceil(rowCollection.length / 10)
       }, {
-        itemsPerPage: 13, onPageChange: 'onPageChange(newPage)'
+        onPageChange: 'onPageChange(newPage)'
       });
 
       let pagination = element.find('ul.pagination');
@@ -205,6 +210,25 @@ describe('sti-pagination directive', () => {
       $scope.$apply();
 
       expect($scope.onPageChange.calls.count()).toEqual(1);
+    });
+  });
+
+  describe('items-per-page binding', () => {
+    it('should reset page number once items-per-page is changed', () => {
+      spyOn(controllerMock, 'slice').and.callThrough();
+      $scope.itemsPerPage = 20;
+      compileElement({
+        number: 10,
+        numberOfPages: Math.ceil(rowCollection.length / $scope.itemsPerPage)
+      }, {
+        itemsPerPage: 'itemsPerPage',
+        onPageChange: 'onPageChange(newPage)'
+      });
+
+      $scope.itemsPerPage = 55;
+      $scope.$apply();
+
+      expect(controllerMock.slice).toHaveBeenCalledWith(0, 55);
     });
   });
 });
