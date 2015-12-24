@@ -24,3 +24,7 @@ before_script:
 
 script:
   - bash ./build/ci/test.sh
+
+addons:
+  code_climate:
+    repo_token: 149446817432cfe298a7cbade0632e7b406b7c6f931a086490f2222e998f7f52

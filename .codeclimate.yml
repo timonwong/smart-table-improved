@@ -3,8 +3,9 @@ engines:
     enabled: true
   fixme:
     enabled: true
-  nodesecurity:
-    enabled: true
+  # doesn't work for now
+  # nodesecurity:
+  #  enabled: true
   duplication:
     enabled: true
     config:
