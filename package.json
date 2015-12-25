@@ -26,7 +26,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/timonwong/smart-table-improved.git"
+    "url": "https://github.com/timonwong/smart-table-improved.git"
   },
   "bugs": {
     "url": "https://github.com/timonwong/smart-table-improved/issues"
