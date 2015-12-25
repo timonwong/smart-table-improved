@@ -1,3 +1,5 @@
+import {kebabCase} from './string-helper';
+
 describe('sti-pagination directive', () => {
   let $compile;
   let $rootScope;
@@ -23,17 +25,12 @@ describe('sti-pagination directive', () => {
     }
   };
 
-  function compileElement(paginationState, {itemsPerPage = undefined, templateUrl = undefined, onPageChange = undefined} = {}) {
+  function compileElement(paginationState, directiveOptions = {}) {
     let attrs = [];
-    if (angular.isDefined(itemsPerPage)) {
-      attrs.push(`items-per-page="${itemsPerPage}"`);
-    }
-    if (angular.isDefined(templateUrl)) {
-      attrs.push(`template-url="${templateUrl}"`);
-    }
-    if (angular.isDefined(onPageChange)) {
-      attrs.push(`on-page-change="${onPageChange}"`);
-    }
+    angular.forEach(directiveOptions, (value, key) => {
+      attrs.push(`${kebabCase(key)}="${value}"`);
+    });
+
     let template = `<div st-table="rowCollection"><table></table><sti-pagination ${attrs.join(' ')}></sti-pagination></div>`;
     element = $compile(template)($scope);
     $.extend(tableState.pagination, paginationState);
@@ -163,6 +160,64 @@ describe('sti-pagination directive', () => {
 
       expect(pageLinks.length).toBe(12);
       expect(pageLinks).toEqual(['‹', '1', '...', '13', '14', '15', '16', '17', '18', '19', '20', '›']);
+    });
+
+    it('should handle gracefully even the max-size is greater than total pages count', () => {
+      compileElement({
+        start: 150,
+        totalItemCount: rowCollection.length,
+        numberOfPages: Math.ceil(rowCollection.length / 10),
+        number: 10
+      }, {
+        maxSize: 1000
+      });
+
+      let pageLinks = getPageLinksArray();
+      let expectedPages = ['‹'];
+      for (let i = 1; i <= 20; i++) {
+        expectedPages.push(`${i}`);
+      }
+      expectedPages.push('›');
+
+      expect(pageLinks.length).toBe(22);
+      expect(pageLinks).toEqual(expectedPages);
+    });
+
+    it('should display boundary links if boundary-links is true', () => {
+      compileElement({
+        start: 150,
+        totalItemCount: rowCollection.length,
+        numberOfPages: Math.ceil(rowCollection.length / 10),
+        number: 10
+      }, {boundaryLinks: 'true'});
+
+      let pageLinks = getPageLinksArray();
+
+      expect(pageLinks.length).toBe(14);
+      expect(pageLinks).toEqual(['«', '‹', '1', '...', '13', '14', '15', '16', '17', '18', '19', '20', '›', '»']);
+    });
+
+    it('should hide direction links if direction-links is false', () => {
+      compileElement({
+        start: 150,
+        totalItemCount: rowCollection.length,
+        numberOfPages: Math.ceil(rowCollection.length / 10),
+        number: 10
+      }, {directionLinks: 'false'});
+
+      let pageLinks = getPageLinksArray();
+
+      expect(pageLinks.length).toBe(10);
+      expect(pageLinks).toEqual(['1', '...', '13', '14', '15', '16', '17', '18', '19', '20']);
+    });
+
+    it('should hide pagination if collection is empty and auto-hide is true', () => {
+      $scope.rowCollection = [];
+      compileElement({}, {autoHide: 'true'});
+
+      let pageLinks = getPageLinksArray();
+
+      expect(pageLinks.length).toBe(0);
     });
   });
 
