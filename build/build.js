@@ -51,7 +51,7 @@ function writeTemplates() {
           entries: cacheEntries,
           module: ['smart-table-improved.templates']
         });
-        code = `var angular = require('angular');\n${code}`;
+        code = "var angular = require('angular');\n" + code;
       } catch (error) {
         reject(error);
         return;
