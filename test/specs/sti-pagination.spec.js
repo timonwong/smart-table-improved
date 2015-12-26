@@ -48,11 +48,11 @@ describe('sti-pagination directive', () => {
     this.slice = controllerMock.slice;
   }
 
-  beforeEach(window.module('smart-table-improved', ($controllerProvider) => {
+  beforeEach(angular.mock.module('smart-table-improved', ($controllerProvider) => {
     $controllerProvider.register('stTableController', ControllerMock);
   }));
 
-  beforeEach(window.inject((_$compile_, _$rootScope_, _stConfig_, _stiPaginationConfig_) => {
+  beforeEach(angular.mock.inject((_$compile_, _$rootScope_, _stConfig_, _stiPaginationConfig_) => {
     $compile = _$compile_;
     $rootScope = _$rootScope_;
     stiPaginationConfig = _stiPaginationConfig_;
@@ -97,7 +97,7 @@ describe('sti-pagination directive', () => {
   describe('template', () => {
     let $templateCache;
 
-    beforeEach(window.inject((_$templateCache_) => {
+    beforeEach(angular.mock.inject((_$templateCache_) => {
       $templateCache = _$templateCache_;
     }));
 

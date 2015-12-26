@@ -13,9 +13,9 @@ describe('sti-table directive', () => {
     });
   }
 
-  beforeEach(window.module('smart-table-improved'));
+  beforeEach(angular.mock.module('smart-table-improved'));
 
-  beforeEach(window.inject((_$compile_, $rootScope) => {
+  beforeEach(angular.mock.inject((_$compile_, $rootScope) => {
     $compile = _$compile_;
     $scope = $rootScope.$new();
     $scope.rowCollection = [
