@@ -1,5 +1,5 @@
 /*
- * angular-smart-table-improved v0.4.0
+ * angular-smart-table-improved v0.4.1
  * https://github.com/timonwong/smart-table-improved
  *
  * (c) 2015 Timon Wong
@@ -10,8 +10,6 @@
   typeof define === 'function' && define.amd ? define(['angular'], factory) :
   factory(global.angular);
 }(this, function (angular) { 'use strict';
-
-  angular = 'default' in angular ? angular['default'] : angular;
 
   angular.module('smart-table-improved.templates', []);
 
@@ -243,8 +241,7 @@
     }
   }
 
-  var angular$1 = require('angular');
-  angular$1.module("smart-table-improved.templates").run(["$templateCache", function ($templateCache) {
+  angular.module("smart-table-improved.templates").run(["$templateCache", function ($templateCache) {
     $templateCache.put("sti/template/sti-pagination.html", "<ul class=\"pagination {{ paginationClass }}\" ng-if=\"pages.length > 1 || !autoHide\">\n  <li ng-if=\"::boundaryLinks\" ng-class=\"{disabled: currentPage === 1}\">\n    <a href=\"\" ng-click=\"selectPage(1)\">&laquo;</a>\n  </li>\n  <li ng-if=\"::directionLinks\" ng-class=\"{disabled: currentPage === 1}\">\n    <a href=\"\" ng-click=\"selectPage(currentPage - 1)\">&lsaquo;</a>\n  </li>\n  <li ng-repeat=\"pageNumber in pages track by tracker(pageNumber, $index)\" ng-class=\"{active: currentPage === pageNumber, disabled: pageNumber === \'...\'}\" class=\"pagenumbers\">\n    <a href=\"\" ng-click=\"selectPage(pageNumber)\">{{ pageNumber }}</a>\n  </li>\n  <li ng-if=\"::directionLinks\" ng-class=\"{disabled: currentPage === numPages}\">\n    <a href=\"\" ng-click=\"selectPage(currentPage + 1)\">&rsaquo;</a>\n  </li>\n  <li ng-if=\"::boundaryLinks\" ng-class=\"{disabled: currentPage === numPages}\">\n    <a href=\"\" ng-click=\"selectPage(numPages)\">&raquo;</a>\n  </li>\n</ul>\n");
   }]);
 
