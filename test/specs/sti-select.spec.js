@@ -1,10 +1,17 @@
+import {kebabCase} from './string-helper';
+
 describe('sti-select directive', () => {
   let $compile;
   let $scope;
   let element;
 
-  function compileElement() {
-    let template = `<table st-table="displayCollection" st-safe-src="rowCollection" sti-table>
+  function compileElement(directiveOptions = {trackSelected: 'true'}) {
+    let attrs = [];
+    angular.forEach(directiveOptions, (value, key) => {
+      attrs.push(`${kebabCase(key)}="${value}"`);
+    });
+
+    let template = `<table st-table="displayCollection" st-safe-src="rowCollection" sti-table ${attrs.join(' ')}>
       <thead>
         <tr>
           <th><input type="checkbox" sti-select-all="displayCollection"></th>
@@ -154,6 +161,27 @@ describe('sti-select directive', () => {
       $scope.$apply();
 
       expect(stiTableScope.selected[id]).toBeUndefined();
+    });
+
+    it('should not reset checked states from removed items if data soruce changed when track-selected attributed is set to "false"', () => {
+      compileElement({trackSelected: 'false'});
+      let firstCheckbox = element.find('input[sti-select]')[0];
+
+      firstCheckbox.checked = true;
+      angular.element(firstCheckbox).triggerHandler('click');
+      $scope.$apply();
+
+      // all checkboxes selected so check-all should be checked
+      let stiTableScope = element.scope();
+      let id = $scope.rowCollection[0].$$hashKey;
+      expect(element.scope().numSelected).toBe(1);
+      expect(stiTableScope.selected[id]).toBeDefined();
+
+      // Remove item from data source
+      $scope.rowCollection.splice(0, 1);
+      $scope.$apply();
+
+      expect(stiTableScope.selected[id]).toBeDefined();
     });
   });
 

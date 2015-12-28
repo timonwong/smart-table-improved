@@ -110,7 +110,7 @@ function stiTable($parse) {
     let [stTableCtrl, stiTableCtrl] = ctrls;
 
     scope.$stiRowIdField = angular.isDefined(attrs.rowIdField) ? attrs.rowIdField : '$$hashKey';
-    let trackSelected = angular.isDefined(attrs.trackSelected) ? scope.$parent.$eval(attrs.trackSelected) : true;
+    let trackSelected = angular.isDefined(attrs.trackSelected) ? scope.$parent.$eval(attrs.trackSelected) : false;
     if (trackSelected) {
       scope.$watchCollection(attrs.stTable, stiTableCtrl.updateSelectedStatus.bind(stiTableCtrl));
     }
