@@ -1,5 +1,5 @@
 /*
- * angular-smart-table-improved v0.3.0
+ * angular-smart-table-improved v0.4.0
  * https://github.com/timonwong/smart-table-improved
  *
  * (c) 2015 Timon Wong
@@ -8,17 +8,34 @@
 (function (global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined' ? factory(require('angular')) :
   typeof define === 'function' && define.amd ? define(['angular'], factory) :
-  factory(global.angular$1);
-}(this, function (angular$1) { 'use strict';
+  factory(global.angular);
+}(this, function (angular) { 'use strict';
 
-  angular$1 = 'default' in angular$1 ? angular$1['default'] : angular$1;
+  angular = 'default' in angular ? angular['default'] : angular;
 
-  angular$1.module('smart-table-improved.templates', []);
+  angular.module('smart-table-improved.templates', []);
 
-  angular$1.module('smart-table-improved', ['smart-table', 'smart-table-improved.templates']);
+  angular.module('smart-table-improved', ['smart-table', 'smart-table-improved.templates']);
 
-  angular$1.module('smart-table-improved').directive('stiTable', stiTable);
+  angular.module('smart-table-improved').directive('stiTable', stiTable);
 
+  /**
+   * @ngdoc directive
+   * @name smart-table-improved.directive:stiTable
+   * @restrict A
+   * @scope true
+   *
+   * @description
+   * The stiTable directive is a helper to stTable directive.
+   *
+   * @element table st-table='rowCollection'
+   * @param {string} defaultSort
+   * @param {string} defaultSortReverse
+   * @param {Expression} onPagination Expression to evaluate upon pagination state
+   * changes. (Pagination object is available as $pagination, with `currentPage`,
+   * `numberOfPages` and `totalItemCount` inside)
+   *
+   */
   stiTable.$inject = ['$parse'];
   function stiTable($parse) {
     return {
@@ -30,15 +47,35 @@
 
     function link(scope, element, attrs, ctrl) {
       var stTableCtrl = ctrl;
+      var onPaginationHandler = undefined;
+
+      if (attrs.onPagination) {
+        onPaginationHandler = $parse(attrs.onPagination);
+
+        scope.$watch(function () {
+          return stTableCtrl.tableState().pagination;
+        }, handlePaginationChange, true);
+      }
 
       if (attrs.defaultSort) {
         var reverse = !!$parse(attrs.defaultSortReverse)(scope);
         stTableCtrl.sortBy(attrs.defaultSort, reverse);
       }
+
+      function handlePaginationChange() {
+        var paginationState = stTableCtrl.tableState().pagination;
+        var pagination = {
+          currentPage: Math.floor(paginationState.start / paginationState.number) + 1,
+          numberOfPages: paginationState.numberOfPages,
+          totalItemCount: paginationState.totalItemCount
+        };
+
+        onPaginationHandler(scope, { $pagination: pagination });
+      }
     }
   }
 
-  angular$1.module('smart-table-improved').constant('stiPaginationConfig', {
+  angular.module('smart-table-improved').constant('stiPaginationConfig', {
     itemsPerPage: 10,
     maxSize: 10,
     templateUrl: 'sti/template/sti-pagination.html'
@@ -53,9 +90,7 @@
         itemsPerPage: '=?',
         maxSize: '=?',
         onPageChange: '&',
-        autoHide: '=?',
-        currentPage: '=?',
-        totalItemCount: '=?'
+        autoHide: '=?'
       },
       templateUrl: function templateUrl(element, attrs) {
         return attrs.templateUrl || stiPaginationConfig.templateUrl;
@@ -67,9 +102,9 @@
       scope.itemsPerPage = scope.itemsPerPage ? scope.itemsPerPage : stiPaginationConfig.itemsPerPage;
       scope.maxSize = scope.maxSize ? scope.maxSize : stiPaginationConfig.maxSize;
 
-      scope.autoHide = angular$1.isDefined(scope.autoHide) ? scope.autoHide : false;
-      scope.directionLinks = angular$1.isDefined(attrs.directionLinks) ? scope.$parent.$eval(attrs.directionLinks) : true;
-      scope.boundaryLinks = angular$1.isDefined(attrs.boundaryLinks) ? scope.$parent.$eval(attrs.boundaryLinks) : false;
+      scope.autoHide = angular.isDefined(scope.autoHide) ? scope.autoHide : false;
+      scope.directionLinks = angular.isDefined(attrs.directionLinks) ? scope.$parent.$eval(attrs.directionLinks) : true;
+      scope.boundaryLinks = angular.isDefined(attrs.boundaryLinks) ? scope.$parent.$eval(attrs.boundaryLinks) : false;
       scope.paginationClass = attrs.paginationClass || '';
 
       var paginationRange = Math.max(scope.maxSize, 5);
@@ -95,12 +130,18 @@
         }
       });
 
+      scope.$watch('maxSize', redraw);
+
       // view -> table state
       scope.selectPage = function (page) {
         if (page > 0 && page <= scope.numPages) {
           ctrl.slice((page - 1) * scope.itemsPerPage, scope.itemsPerPage);
         }
       };
+
+      if (!ctrl.tableState().pagination.number) {
+        ctrl.slice(0, scope.itemsPerPage);
+      }
 
       /**
        * Custom "track by" function which allows for duplicate "..." entries on long lists,
@@ -113,10 +154,6 @@
       scope.tracker = function (id, index) {
         return id + '_' + index;
       };
-
-      if (!ctrl.tableState().pagination.number) {
-        ctrl.slice(0, scope.itemsPerPage);
-      }
 
       function redraw() {
         var paginationState = ctrl.tableState().pagination;
@@ -206,7 +243,8 @@
     }
   }
 
-  angular.module("smart-table-improved.templates").run(["$templateCache", function ($templateCache) {
+  var angular$1 = require('angular');
+  angular$1.module("smart-table-improved.templates").run(["$templateCache", function ($templateCache) {
     $templateCache.put("sti/template/sti-pagination.html", "<ul class=\"pagination {{ paginationClass }}\" ng-if=\"pages.length > 1 || !autoHide\">\n  <li ng-if=\"::boundaryLinks\" ng-class=\"{disabled: currentPage === 1}\">\n    <a href=\"\" ng-click=\"selectPage(1)\">&laquo;</a>\n  </li>\n  <li ng-if=\"::directionLinks\" ng-class=\"{disabled: currentPage === 1}\">\n    <a href=\"\" ng-click=\"selectPage(currentPage - 1)\">&lsaquo;</a>\n  </li>\n  <li ng-repeat=\"pageNumber in pages track by tracker(pageNumber, $index)\" ng-class=\"{active: currentPage === pageNumber, disabled: pageNumber === \'...\'}\" class=\"pagenumbers\">\n    <a href=\"\" ng-click=\"selectPage(pageNumber)\">{{ pageNumber }}</a>\n  </li>\n  <li ng-if=\"::directionLinks\" ng-class=\"{disabled: currentPage === numPages}\">\n    <a href=\"\" ng-click=\"selectPage(currentPage + 1)\">&rsaquo;</a>\n  </li>\n  <li ng-if=\"::boundaryLinks\" ng-class=\"{disabled: currentPage === numPages}\">\n    <a href=\"\" ng-click=\"selectPage(numPages)\">&raquo;</a>\n  </li>\n</ul>\n");
   }]);
 
