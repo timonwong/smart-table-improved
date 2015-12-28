@@ -13,8 +13,8 @@ npm install
 
 # Install online reporter tools for code coverage on demand
 if [[ -n "${CODECLIMATE_REPO_TOKEN}" ]]; then
-    npm install -g 'codeclimate-test-reporter'
+    npm install 'codeclimate-test-reporter'
 fi
 if [[ "${CODECOV_UPLOAD}" == "true" ]]; then
-    npm install -g 'codecov.io'
+    npm install 'codecov.io'
 fi
