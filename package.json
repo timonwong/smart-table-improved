@@ -1,7 +1,7 @@
 {
   "name": "angular-smart-table-improved",
   "author": "Timon Wong <timon86.wang@gmail.com>",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "description": "Collection of useful widgets for the smart-table",
   "license": "MIT",
   "main": "dist/smart-table-improved.cjs.js",
