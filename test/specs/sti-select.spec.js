@@ -39,11 +39,11 @@ describe('sti-select directive', () => {
     $compile = _$compile_;
     $scope = $rootScope.$new();
     $scope.rowCollection = [
-      {id: 1, name: 'Renard', firstname: 'Laurent', age: 66},
-      {id: 2, name: 'Francoise', firstname: 'Frere', age: 99},
-      {id: 3, name: 'Renard', firstname: 'Olivier', age: 33},
-      {id: 4, name: 'Leponge', firstname: 'Bob', age: 22},
-      {id: 5, name: 'Faivre', firstname: 'Blandine', age: 44}
+      {id: 1, name: 'Renard', firstName: 'Laurent', age: 66},
+      {id: 2, name: 'Francoise', firstName: 'Frere', age: 99},
+      {id: 3, name: 'Renard', firstName: 'Olivier', age: 33},
+      {id: 4, name: 'Leponge', firstName: 'Bob', age: 22},
+      {id: 5, name: 'Faivre', firstName: 'Blandine', age: 44}
     ];
 
     compileElement();

@@ -18,8 +18,7 @@ var banner =
   ' */';
 
 var babelOptions = {
-  presets: [ 'es2015-rollup' ],
-  plugins: [ 'transform-runtime' ]
+  presets: [require('./babel-preset-es2015-rollup-loose')]
 };
 
 function main() {

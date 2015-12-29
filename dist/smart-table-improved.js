@@ -15,7 +15,88 @@
 
   angular.module('smart-table-improved', ['smart-table', 'smart-table-improved.templates']);
 
-  angular.module('smart-table-improved').directive('stiTable', stiTable);
+  var prefix = 'stiTable';
+
+  var EventNames = {
+    rowSelected: prefix + ':rowSelected'
+  };
+
+  angular.module('smart-table-improved').controller('StiTableController', StiTableController).directive('stiTable', stiTable);
+
+  /**
+   * @ngdoc controller
+   * @name smart-table-improved.controller:StiTableController
+   * @description
+   * Controller used by `stiTable`
+   */
+  StiTableController.$inject = ['$scope'];
+  function StiTableController($scope) {
+    var ctrl = this;
+
+    $scope.selected = {};
+    $scope.numSelected = 0;
+
+    ctrl.isSelected = isSelected;
+    ctrl.select = select;
+    ctrl.updateSelectedStatus = updateSelectedStatus;
+
+    /**
+     * Return true if the row is selected.
+     * @param {Object} row
+     * @returns {Boolean}
+     */
+    function isSelected(row) {
+      var rowState = $scope.selected[row[$scope.$stiRowIdField]];
+      return rowState && rowState.checked;
+    }
+
+    /**
+     * Set row checked state
+     * @param {Object} row
+     * @param {Boolean} checkedState
+     * @param {Boolean} broadcast (default false)
+     */
+    function select(row, checkedState) {
+      var _ref = arguments.length <= 2 || arguments[2] === undefined ? {} : arguments[2];
+
+      var _ref$broadcast = _ref.broadcast;
+      var broadcast = _ref$broadcast === undefined ? false : _ref$broadcast;
+
+      $scope.selected[row[$scope.$stiRowIdField]] = {
+        checked: checkedState,
+        item: row
+      };
+
+      if (checkedState) {
+        $scope.numSelected++;
+      } else {
+        $scope.numSelected--;
+      }
+
+      if (broadcast) {
+        var rowObj = {
+          row: row,
+          checked: checkedState
+        };
+        $scope.$broadcast(EventNames.rowSelected, rowObj);
+      }
+    }
+
+    function updateSelectedStatus(collection) {
+      var idField = $scope.$stiRowIdField;
+      var lastSelected = $scope.selected;
+      var nextSelected = {};
+
+      angular.forEach(collection, function (item) {
+        var id = item[idField];
+        if (lastSelected[id]) {
+          nextSelected[id] = lastSelected[id];
+        }
+      });
+
+      $scope.selected = nextSelected;
+    }
+  }
 
   /**
    * @ngdoc directive
@@ -32,32 +113,43 @@
    * @param {Expression} onPagination Expression to evaluate upon pagination state
    * changes. (Pagination object is available as $pagination, with `currentPage`,
    * `numberOfPages` and `totalItemCount` inside)
+   * @param {string} rowIdField
+   * @param {Boolean} trackSelected
    *
    */
   stiTable.$inject = ['$parse'];
   function stiTable($parse) {
     return {
       restrict: 'A',
-      require: 'stTable',
+      require: ['stTable', 'stiTable'],
       scope: true,
+      controller: 'StiTableController',
+      controllerAs: 'stiTableCtrl',
       link: link
     };
 
-    function link(scope, element, attrs, ctrl) {
-      var stTableCtrl = ctrl;
-      var onPaginationHandler = undefined;
+    function link(scope, element, attrs, ctrls) {
+      var stTableCtrl = ctrls[0];
+      var stiTableCtrl = ctrls[1];
 
+      scope.$stiRowIdField = angular.isDefined(attrs.rowIdField) ? attrs.rowIdField : '$$hashKey';
+      var trackSelected = angular.isDefined(attrs.trackSelected) ? scope.$parent.$eval(attrs.trackSelected) : false;
+      if (trackSelected) {
+        scope.$watchCollection(attrs.stTable, stiTableCtrl.updateSelectedStatus.bind(stiTableCtrl));
+      }
+
+      if (attrs.defaultSort) {
+        var reverse = angular.isDefined(attrs.defaultSortReverse) ? scope.$parent.$eval(attrs.defaultSortReverse) : false;
+        stTableCtrl.sortBy(attrs.defaultSort, reverse);
+      }
+
+      var onPaginationHandler = undefined;
       if (attrs.onPagination) {
         onPaginationHandler = $parse(attrs.onPagination);
 
         scope.$watch(function () {
           return stTableCtrl.tableState().pagination;
         }, handlePaginationChange, true);
-      }
-
-      if (attrs.defaultSort) {
-        var reverse = !!$parse(attrs.defaultSortReverse)(scope);
-        stTableCtrl.sortBy(attrs.defaultSort, reverse);
       }
 
       function handlePaginationChange() {
@@ -237,6 +329,85 @@
         }
       } else {
         return i;
+      }
+    }
+  }
+
+  angular.module('smart-table-improved').directive('stiSelect', stiSelect);
+
+  stiSelect.$inject = [];
+  function stiSelect() {
+    return {
+      restrict: 'A',
+      require: '^stiTable',
+      scope: {
+        row: '=stiSelect'
+      },
+      link: link
+    };
+
+    function link(scope, element, attrs, ctrl) {
+      var stiTableCtrl = ctrl;
+
+      element.on('click', clickHandler);
+
+      // Select or unselect row
+      function clickHandler() {
+        scope.$apply(function () {
+          var checkedState = element.prop('checked');
+          stiTableCtrl.select(scope.row, checkedState, { broadcast: true });
+        });
+      }
+    }
+  }
+
+  angular.module('smart-table-improved').directive('stiSelectAll', stiSelectAll);
+
+  stiSelectAll.$inject = [];
+  function stiSelectAll() {
+    return {
+      restrict: 'A',
+      require: ['^stiTable', '^stTable'],
+      scope: {
+        rows: '=stiSelectAll'
+      },
+      link: link
+    };
+
+    function link(scope, element, attrs, ctrls) {
+      var stiTableCtrl = ctrls[0];
+      var stTableCtrl = ctrls[1];
+
+      element.on('click', clickHandler);
+
+      // Watch the table state for changes (sort, filter, pagination, etc)
+      scope.$watch(function () {
+        return stTableCtrl.tableState();
+      }, updateRowCheckState, true);
+      // Watch the row length for added/removed rows
+      scope.$watch('rows.length', updateRowCheckState);
+      // Watch for row selection
+      scope.$on(EventNames.rowSelected, updateRowCheckState);
+
+      // Toggle checked state for "select all" checkbox
+      function clickHandler() {
+        scope.$apply(function () {
+          var checked = element.prop('checked');
+          angular.forEach(scope.rows, function (row) {
+            var selected = stiTableCtrl.isSelected(row);
+            if (selected !== checked) {
+              stiTableCtrl.select(row, checked);
+            }
+          });
+        });
+      }
+
+      // Update "select all" checkbox when table state changes
+      function updateRowCheckState() {
+        var visibleRows = scope.rows;
+        var numVisibleRows = visibleRows.length;
+        var checkedCount = visibleRows.filter(stiTableCtrl.isSelected).length;
+        element.prop('checked', numVisibleRows > 0 && numVisibleRows === checkedCount);
       }
     }
   }

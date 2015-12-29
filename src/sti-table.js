@@ -65,12 +65,12 @@ function StiTableController($scope) {
     let lastSelected = $scope.selected;
     let nextSelected = {};
 
-    for (let item of collection) {
+    angular.forEach(collection, (item) => {
       let id = item[idField];
       if (lastSelected[id]) {
         nextSelected[id] = lastSelected[id];
       }
-    }
+    });
 
     $scope.selected = nextSelected;
   }
