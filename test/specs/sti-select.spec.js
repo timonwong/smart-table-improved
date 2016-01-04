@@ -3,9 +3,10 @@ import {kebabCase} from './string-helper';
 describe('sti-select directive', () => {
   let $compile;
   let $scope;
+  let $timeout;
   let element;
 
-  function compileElement(directiveOptions = {trackSelected: 'true'}) {
+  function compileElement(directiveOptions = {trackSelectedMode: 'displayed'}) {
     let attrs = [];
     angular.forEach(directiveOptions, (value, key) => {
       attrs.push(`${kebabCase(key)}="${value}"`);
@@ -13,6 +14,10 @@ describe('sti-select directive', () => {
 
     let template = `<table st-table="displayCollection" st-safe-src="rowCollection" sti-table ${attrs.join(' ')}>
       <thead>
+        <tr>
+          <td></td>
+          <td colspan="3"><input st-search="name"></td>
+        </tr>
         <tr>
           <th><input type="checkbox" sti-select-all="displayCollection"></th>
           <th>Name</th>
@@ -22,7 +27,7 @@ describe('sti-select directive', () => {
       </thead>
       <tbody>
         <tr ng-repeat="row in displayCollection">
-          <td><input type="checkbox" sti-select="row" ng-model="selected[row[$stiRowIdField]].checked"></td>
+          <td><input type="checkbox" sti-select="row" ng-model="$stiSelected[row[$stiRowIdField]].checked"></td>
           <td>{{ row.name }}</td>
           <td>{{ row.firstName }}</td>
           <td>{{ row.age }}</td>
@@ -35,9 +40,10 @@ describe('sti-select directive', () => {
 
   beforeEach(angular.mock.module('smart-table-improved'));
 
-  beforeEach(angular.mock.inject((_$compile_, $rootScope) => {
+  beforeEach(angular.mock.inject((_$compile_, $rootScope, _$timeout_) => {
     $compile = _$compile_;
     $scope = $rootScope.$new();
+    $timeout = _$timeout_;
     $scope.rowCollection = [
       {id: 1, name: 'Renard', firstName: 'Laurent', age: 66},
       {id: 2, name: 'Francoise', firstName: 'Frere', age: 99},
@@ -67,14 +73,14 @@ describe('sti-select directive', () => {
       });
     });
 
-    it('should update selected an numSelected when select called', () => {
+    it('should update selected an $stiNumSelected when select called', () => {
       let stiTableCtrl = element.controller('stiTable');
       let firstRow = $scope.rowCollection[0];
       stiTableCtrl.select(firstRow, true);
 
       let stiTableScope = element.scope();
-      expect(stiTableScope.selected[firstRow[stiTableScope.$stiRowIdField]]).toBeDefined();
-      expect(stiTableScope.numSelected).toBe(1);
+      expect(stiTableScope.$stiSelected[firstRow[stiTableScope.$stiRowIdField]]).toBeDefined();
+      expect(stiTableScope.$stiNumSelected).toBe(1);
     });
   });
 
@@ -85,38 +91,38 @@ describe('sti-select directive', () => {
       checkboxes = element.find('input[sti-select]');
     });
 
-    it('should have numSelected === 1 when first checkbox is clicked', () => {
+    it('should have $stiNumSelected === 1 when first checkbox is clicked', () => {
       let checkbox = checkboxes.first();
       checkbox[0].checked = true;
       checkbox.triggerHandler('click');
       $scope.$apply();
 
-      expect(element.scope().numSelected).toBe(1);
+      expect(element.scope().$stiNumSelected).toBe(1);
     });
 
-    it('should have numSelected === 0 when first checkbox is clicked, then unclicked', () => {
+    it('should have $stiNumSelected === 0 when first checkbox is clicked, then unclicked', () => {
       let checkbox = checkboxes.first();
       checkbox[0].checked = true;
       checkbox.triggerHandler('click');
       $scope.$apply();
 
-      expect(element.scope().numSelected).toBe(1);
+      expect(element.scope().$stiNumSelected).toBe(1);
 
       checkbox[0].checked = false;
       checkbox.triggerHandler('click');
       $scope.$apply();
 
-      expect(element.scope().numSelected).toBe(0);
+      expect(element.scope().$stiNumSelected).toBe(0);
     });
 
-    it('should have numSelected === 5 and select-all checked when all rows selected', () => {
+    it('should have $stiNumSelected === 5 and select-all checked when all rows selected', () => {
       angular.forEach(checkboxes, (checkbox) => {
         checkbox.checked = true;
         angular.element(checkbox).triggerHandler('click');
       });
       $scope.$apply();
 
-      expect(element.scope().numSelected).toBe(5);
+      expect(element.scope().$stiNumSelected).toBe(5);
       expect(element.find('input[sti-select-all]')[0].checked).toBeTruthy();
     });
 
@@ -128,7 +134,7 @@ describe('sti-select directive', () => {
       $scope.$apply();
 
       // all checkboxes selected so check-all should be checked
-      expect(element.scope().numSelected).toBe(5);
+      expect(element.scope().$stiNumSelected).toBe(5);
       expect(element.find('input[sti-select-all]')[0].checked).toBeTruthy();
 
       // deselect one checkbox
@@ -138,7 +144,7 @@ describe('sti-select directive', () => {
       $scope.$apply();
 
       // check-all should be unchecked
-      expect(element.scope().numSelected).toBe(4);
+      expect(element.scope().$stiNumSelected).toBe(4);
       expect(element.find('input[sti-select-all]')[0].checked).toBeFalsy();
     });
 
@@ -152,19 +158,19 @@ describe('sti-select directive', () => {
       // all checkboxes selected so check-all should be checked
       let stiTableScope = element.scope();
       let id = $scope.rowCollection[0].$$hashKey;
-      expect(element.scope().numSelected).toBe(5);
+      expect(stiTableScope.$stiNumSelected).toBe(5);
       expect(element.find('input[sti-select-all]')[0].checked).toBeTruthy();
-      expect(stiTableScope.selected[id]).toBeDefined();
+      expect(stiTableScope.$stiSelected[id]).toBeDefined();
 
       // Remove an item from data source
       $scope.rowCollection.splice(0, 1);
       $scope.$apply();
 
-      expect(stiTableScope.selected[id]).toBeUndefined();
+      expect(stiTableScope.$stiSelected[id]).toBeUndefined();
     });
 
-    it('should not reset checked states from removed items if data soruce changed when track-selected attributed is set to "false"', () => {
-      compileElement({trackSelected: 'false'});
+    it('should not reset checked states from removed items if data soruce changed when track-selected-mode attributed is set to "false"', () => {
+      compileElement({trackSelectedMode: 'false'});
       let firstCheckbox = element.find('input[sti-select]')[0];
 
       firstCheckbox.checked = true;
@@ -174,14 +180,63 @@ describe('sti-select directive', () => {
       // all checkboxes selected so check-all should be checked
       let stiTableScope = element.scope();
       let id = $scope.rowCollection[0].$$hashKey;
-      expect(element.scope().numSelected).toBe(1);
-      expect(stiTableScope.selected[id]).toBeDefined();
+      expect(stiTableScope.$stiNumSelected).toBe(1);
+      expect(stiTableScope.$stiSelected[id]).toBeDefined();
 
       // Remove item from data source
       $scope.rowCollection.splice(0, 1);
       $scope.$apply();
 
-      expect(stiTableScope.selected[id]).toBeDefined();
+      expect(stiTableScope.$stiSelected[id]).toBeDefined();
+    });
+
+    it('should reset checked states when only displayed collection changed by default', () => {
+      let firstCheckbox = element.find('input[sti-select]')[0];
+
+      firstCheckbox.checked = true;
+      angular.element(firstCheckbox).triggerHandler('click');
+      $scope.$apply();
+
+      // Trigger a search, which deliberately returns empty match
+      let input = element.find('input[st-search]');
+      input.val('@@@INVALID INPUT@@@');
+      input.triggerHandler('input');
+      $timeout.flush();
+
+      expect(element.scope().$stiNumSelected).toBe(0);
+
+      // Clear the search
+      input.val('');
+      input.triggerHandler('input');
+      $scope.$apply();
+      $timeout.flush();
+
+      expect(element.scope().$stiNumSelected).toBe(0);
+    });
+
+    it('should not reset check states when only display collection changed and track-selected-mode is set to "all"', () => {
+      compileElement({trackSelectedMode: 'all'});
+      let firstCheckbox = element.find('input[sti-select]')[0];
+
+      firstCheckbox.checked = true;
+      angular.element(firstCheckbox).triggerHandler('click');
+      $scope.$apply();
+
+      // Trigger a search, which deliberately returns empty match
+      let input = element.find('input[st-search]');
+      input.val('@@@INVALID INPUT@@@');
+      input.triggerHandler('input');
+      $timeout.flush();
+
+      expect(element.scope().$stiNumSelected).toBe(1);
+
+      // Clear the search
+      input.val('');
+      input.triggerHandler('input');
+      $scope.$apply();
+      $timeout.flush();
+
+      expect(element.scope().$stiNumSelected).toBe(1);
     });
   });
 
@@ -202,7 +257,7 @@ describe('sti-select directive', () => {
       selectAll.triggerHandler('click');
       $scope.$apply();
 
-      expect(element.scope().numSelected).toBe(5);
+      expect(element.scope().$stiNumSelected).toBe(5);
       let checkboxes = element.find('tbody input[sti-select]');
       angular.forEach(checkboxes, (checkbox) => {
         expect(checkbox.checked).toBeTruthy();
@@ -216,7 +271,7 @@ describe('sti-select directive', () => {
 
       let checkboxes = element.find('tbody input[sti-select]');
 
-      expect(element.scope().numSelected).toBe(5);
+      expect(element.scope().$stiNumSelected).toBe(5);
       angular.forEach(checkboxes, (checkbox) => {
         expect(checkbox.checked).toBeTruthy();
       });
@@ -225,7 +280,7 @@ describe('sti-select directive', () => {
       selectAll.triggerHandler('click');
       $scope.$apply();
 
-      expect(element.scope().numSelected).toBe(0);
+      expect(element.scope().$stiNumSelected).toBe(0);
       angular.forEach(checkboxes, (checkbox) => {
         expect(checkbox.checked).toBeFalsy();
       });
@@ -243,7 +298,7 @@ describe('sti-select directive', () => {
       selectAll.triggerHandler('click');
       $scope.$apply();
 
-      expect(element.scope().numSelected).toBe(5);
+      expect(element.scope().$stiNumSelected).toBe(5);
       let checkboxes = element.find('tbody input[sti-select]');
       angular.forEach(checkboxes, (checkbox) => {
         expect(checkbox.checked).toBeTruthy;
