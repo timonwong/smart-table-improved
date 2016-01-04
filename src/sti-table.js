@@ -16,8 +16,8 @@ StiTableController.$inject = ['$scope'];
 function StiTableController($scope) {
   let ctrl = this;
 
-  $scope.selected = {};
-  $scope.numSelected = 0;
+  $scope.$stiSelected = {};
+  $scope.$stiNumSelected = 0;
 
   ctrl.isSelected = isSelected;
   ctrl.select = select;
@@ -29,7 +29,8 @@ function StiTableController($scope) {
    * @returns {Boolean}
    */
   function isSelected(row) {
-    let rowState = $scope.selected[row[$scope.$stiRowIdField]];
+    let rowIdField = $scope.$stiRowIdField;
+    let rowState = $scope.$stiSelected[row[rowIdField]];
     return rowState && rowState.checked;
   }
 
@@ -40,15 +41,16 @@ function StiTableController($scope) {
    * @param {Boolean} broadcast (default false)
    */
   function select(row, checkedState, {broadcast = false} = {}) {
-    $scope.selected[row[$scope.$stiRowIdField]] = {
+    let rowIdField = $scope.$stiRowIdField;
+    $scope.$stiSelected[row[rowIdField]] = {
       checked: checkedState,
-      item: row
+      row: row
     };
 
     if (checkedState) {
-      $scope.numSelected++;
+      $scope.$stiNumSelected++;
     } else {
-      $scope.numSelected--;
+      $scope.$stiNumSelected--;
     }
 
     if (broadcast) {
@@ -60,19 +62,31 @@ function StiTableController($scope) {
     }
   }
 
+  /**
+   * Update current selection status from latest collection
+   */
   function updateSelectedStatus(collection) {
-    let idField = $scope.$stiRowIdField;
-    let lastSelected = $scope.selected;
+    let rowIdField = $scope.$stiRowIdField;
+    let lastSelected = $scope.$stiSelected;
     let nextSelected = {};
+    let nextNumSelected = 0;
 
     angular.forEach(collection, (item) => {
-      let id = item[idField];
-      if (lastSelected[id]) {
-        nextSelected[id] = lastSelected[id];
+      let id = item[rowIdField];
+      let selectedItem = lastSelected[id];
+
+      if (!selectedItem) {
+        return;
+      }
+
+      nextSelected[id] = selectedItem;
+      if (selectedItem.checked) {
+        nextNumSelected++;
       }
     });
 
-    $scope.selected = nextSelected;
+    $scope.$stiNumSelected = nextNumSelected;
+    $scope.$stiSelected = nextSelected;
   }
 }
 
@@ -87,12 +101,12 @@ function StiTableController($scope) {
  *
  * @element table st-table='rowCollection'
  * @param {string} defaultSort
- * @param {string} defaultSortReverse
+ * @param {Boolean} defaultSortReverse (default false)
  * @param {Expression} onPagination Expression to evaluate upon pagination state
  * changes. (Pagination object is available as $pagination, with `currentPage`,
  * `numberOfPages` and `totalItemCount` inside)
- * @param {string} rowIdField
- * @param {Boolean} trackSelected
+ * @param {string} rowIdField (default '$$hashkey')
+ * @param {string|Boolean} trackSelectedMode (default false)
  *
  */
 stiTable.$inject = ['$parse'];
@@ -110,8 +124,11 @@ function stiTable($parse) {
     let [stTableCtrl, stiTableCtrl] = ctrls;
 
     scope.$stiRowIdField = angular.isDefined(attrs.rowIdField) ? attrs.rowIdField : '$$hashKey';
-    let trackSelected = angular.isDefined(attrs.trackSelected) ? scope.$parent.$eval(attrs.trackSelected) : false;
-    if (trackSelected) {
+    if (attrs.trackSelectedMode === 'all') {
+      // Track all collection (from st-safe-src attribute)
+      scope.$watchCollection(attrs.stSafeSrc, stiTableCtrl.updateSelectedStatus.bind(stiTableCtrl));
+    } else if (attrs.trackSelectedMode === 'displayed') {
+      // Track displayed collection only
       scope.$watchCollection(attrs.stTable, stiTableCtrl.updateSelectedStatus.bind(stiTableCtrl));
     }
 

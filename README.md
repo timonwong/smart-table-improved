@@ -13,6 +13,7 @@ Smart-Table-Improved is a collection of useful widgets for the great [Smart-Tabl
 
 - AngularJs
 - [Smart-Table]
+- Modern browsers (IE>=9 is required)
 
 ## Installation
 
