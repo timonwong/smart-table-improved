@@ -17,7 +17,6 @@ Smart-Table-Improved is a collection of useful widgets for the great [Smart-Tabl
 
 ## Installation
 
-
 ### Install with NPM
 
 ```
@@ -26,11 +25,26 @@ $ npm install angular-smart-table-improved
 
 ### Manual download
 
+Besides npm package, UMD module is placed under `dist/` directory:
+
+- dist/smart-table-improved.js
+- dist/smart-table-improved.min.js
+
+Please note that thoses files on the `development` branch may not be updated, you may have to use the ones on the `master` branch or tags.
+
 ## Usage
 
 First you need to include the module in your project:
 
 ```javascript
+angular.module('yourApp', ['smart-table-improved']);
+```
+
+If you're a Browserify or Webpack user (which is recommended), please don't forget to require the module:
+
+```javascript
+require('angular-smart-table-improved');
+
 angular.module('yourApp', ['smart-table-improved']);
 ```
 

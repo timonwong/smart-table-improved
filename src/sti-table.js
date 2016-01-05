@@ -100,8 +100,10 @@ function StiTableController($scope) {
  * The stiTable directive is a helper to stTable directive.
  *
  * @element table st-table='rowCollection'
- * @param {string} defaultSort
- * @param {Boolean} defaultSortReverse (default false)
+ * @param {string} defaultSort A sort key which can be specified to sort the table
+ * initially by.
+ * @param {Boolean} defaultSortReverse Whether to sort reversely with defaultSort
+ * (default false)
  * @param {Expression} onPagination Expression to evaluate upon pagination state
  * changes. (Pagination object is available as $pagination, with `currentPage`,
  * `numberOfPages` and `totalItemCount` inside)
