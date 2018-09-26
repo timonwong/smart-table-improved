@@ -5,7 +5,7 @@
 [![Code Climate](https://codeclimate.com/github/timonwong/smart-table-improved/badges/gpa.svg)](https://codeclimate.com/github/timonwong/smart-table-improved)
 [![codecov.io](https://codecov.io/github/timonwong/smart-table-improved/coverage.svg?branch=development)](https://codecov.io/github/timonwong/smart-table-improved?branch=development)
 [![bitHound Overall Score](https://www.bithound.io/github/timonwong/smart-table-improved/badges/score.svg)](https://www.bithound.io/github/timonwong/smart-table-improved)
-[![devDependency Status](https://david-dm.org/timonwong/smart-table-improved/dev-status.svg?branch=development)](https://david-dm.org/timonwong/smart-table-improved#info=devDependencies)
+[![devDependency Status](https://david-dm.org/timonwong/smart-table-improved/dev-status.svg?branch=development)](https://david-dm.org/timonwong/smart-table-improved#info=devDependencies) [![Greenkeeper badge](https://badges.greenkeeper.io/timonwong/smart-table-improved.svg)](https://greenkeeper.io/)
 
 Smart-Table-Improved is a collection of useful widgets for the great [Smart-Table] component.
 
